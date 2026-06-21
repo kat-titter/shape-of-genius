@@ -20,9 +20,9 @@
     --ink:#0a0e17; --ink-soft:#3a4356; --ink-faint:#828ca0;
     --line:#e6e9f0; --line-soft:#eef1f6;
     --bg:#f4f6f9; --panel:#ffffff;
-    --accent:#ff2e63; --accent-deep:#d11b4a; --accent-soft:#ffeef3;
-    --lime:#aef522; --indigo:#34386e;
-    --grad:linear-gradient(96deg,#ff2e63 0%,#ff7a3d 58%,#ffb02e 100%);
+    --accent:#ff3d6e; --accent-deep:#e02457; --accent-soft:#ffe9ef;
+    --lime:#2ecc71; --indigo:#34386e;
+    --grad:linear-gradient(96deg,#ff3d6e 0%,#ff8a3d 52%,#ffc83d 100%);
     --font-body:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
     --font-display:'Space Grotesk','Inter',-apple-system,sans-serif;
     --font-mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
@@ -36,15 +36,15 @@
     font-size:17px;line-height:1.65;letter-spacing:-.002em;-webkit-font-smoothing:antialiased;
     background-color:var(--bg);
     background-image:
-      radial-gradient(circle at 12% -8%, rgba(255,46,99,.13), transparent 42%),
-      radial-gradient(circle at 97% 3%, rgba(174,245,34,.12), transparent 38%),
+      radial-gradient(circle at 12% -8%, rgba(255,61,110,.13), transparent 42%),
+      radial-gradient(circle at 97% 3%, rgba(46,204,113,.13), transparent 38%),
       radial-gradient(rgba(10,14,23,.05) 1px, transparent 1.4px);
     background-size:auto,auto,22px 22px;background-attachment:fixed,fixed,fixed}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:64px 28px 130px}
   .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
     font-weight:600;color:var(--accent);margin-bottom:22px;display:inline-flex;align-items:center;gap:9px}
   .kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lime);
-    box-shadow:0 0 0 3px rgba(174,245,34,.28)}
+    box-shadow:0 0 0 3px rgba(46,204,113,.28)}
   h1{font-family:var(--font-display);font-size:clamp(40px,7.5vw,64px);line-height:1.02;font-weight:700;
     letter-spacing:-.04em;margin:0 0 22px;
     background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -67,7 +67,7 @@
   /* TL;DR */
   .tldr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);
     border-radius:18px;padding:30px 32px;margin:40px 0 10px;
-    box-shadow:0 18px 44px -28px rgba(255,46,99,.45)}
+    box-shadow:0 18px 44px -28px rgba(255,61,110,.4)}
   .tldr .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
     color:var(--accent);font-weight:700;margin-bottom:16px}
   .tldr p{font-size:17px;line-height:1.58;color:var(--ink-soft);margin:0 0 13px;max-width:none}
@@ -101,9 +101,9 @@
     background:var(--line);outline:none;margin:4px 0 0}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
     width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;
-    border:2px solid #fff;box-shadow:0 0 0 3px rgba(255,46,99,.18),0 1px 3px rgba(10,14,23,.3)}
+    border:2px solid #fff;box-shadow:0 0 0 3px rgba(255,61,110,.2),0 1px 3px rgba(10,14,23,.3)}
   input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);
-    cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 3px rgba(255,46,99,.18)}
+    cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 3px rgba(255,61,110,.2)}
   .toggle{display:flex;align-items:center;gap:9px;margin-top:18px;font-size:13.5px;color:var(--ink-soft)}
   .toggle input{width:15px;height:15px;accent-color:var(--accent)}
   .vcap{font-size:12px;color:var(--ink-faint);margin:14px 2px 0;line-height:1.5}
@@ -171,15 +171,15 @@
   <div class="kicker">Cognitive-Behavioral Profile · n = 7 · Interactive</div>
   <h1>The Shape of Genius</h1>
   <p class="lede">Seven outlier minds — Grimes, Tesla, Musk, Newton, Erd&#337;s, Fischer, West — and the single hidden variable that turns the same wiring into a breakthrough or a breakdown.</p>
-  <div class="byline">Three axes: social orientation · isolation · substances. Compiled June 2026 from primary biography, the interview record, and the peer-reviewed creativity-personality literature.</div>
+  <div class="byline">One hidden variable, seven minds. Compiled June 2026 from primary biography, the interview record, and the peer-reviewed creativity-personality literature.</div>
 
   <!-- TL;DR -->
   <div class="tldr">
     <div class="lbl">TL;DR</div>
-    <p>The "introverted, isolated, drug-fueled loner" is a composite <b>no single genius actually fits</b>. The surface traits scatter — Tesla's celibate solitude vs. Erd&#337;s's homeless hyper-collaboration; Newton's silence vs. West's broadcast.</p>
+    <p>The "tortured genius" is a composite <b>no single mind actually fits</b>. The surface traits scatter — every cliché finds its counter-example among these seven.</p>
     <p>What converges is one level down: an <b>over-tuned exploratory system</b> — high Openness plus a leaky attentional filter (low latent inhibition). Eminent creators are ~7&times; more likely to have that leaky filter.</p>
     <p class="eqline">disinhibition <span class="op">+</span> openness <span class="op">+</span> drive <span class="op">&times;</span> cognitive control <span class="op">&rarr;</span> genius</p>
-    <p>Remove the <b>control</b> term and the exact same inputs produce psychopathology instead. Newton's calculus and Fischer's collapse run on one circuit. Isolation, introversion, and stimulants are <b>downstream readouts</b> — not the cause. Drag the marker below to feel it.</p>
+    <p>Remove the <b>control</b> term and the exact same inputs produce psychopathology instead. Newton's calculus and Fischer's collapse run on one circuit. The famous quirks are <b>downstream readouts</b> — not the cause. Drag the marker below to feel it.</p>
   </div>
 
   <!-- INTERACTIVE -->
@@ -406,7 +406,7 @@
   var vLoad = document.getElementById('vLoad'), vCtrl = document.getElementById('vCtrl');
   var oDot = document.getElementById('oDot'), oText = document.getElementById('oText'), oDesc = document.getElementById('oDesc');
   var showFigs = document.getElementById('showFigs');
-  var accent = '#ff2e63';
+  var accent = '#2ecc71';
 
   var state = { L: 82, C: 84 };
 
@@ -424,11 +424,11 @@
     if (L < 32) return {k:'Conventional', c:'#9aa3b2', fill:'rgba(150,162,182,0.10)',
       d:'Filter tight, associations stay conventional — not enough raw material to be a breakthrough or a breakdown.'};
     var r = C / Math.max(L, 1);
-    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(255,46,99,0.20)',
+    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(46,204,113,0.20)',
       d:'High load, and control keeps pace. The flood gets channeled into work.'};
-    if (r >= 0.55) return {k:'Volatile / mixed', c:'#8a44c4', fill:'rgba(138,68,196,0.16)',
+    if (r >= 0.55) return {k:'Volatile / mixed', c:'#ff9f1c', fill:'rgba(255,159,28,0.16)',
       d:'Output and instability trade places as control fluctuates with state.'};
-    return {k:'Dysregulation', c:'#34386e', fill:'rgba(52,56,110,0.20)',
+    return {k:'Dysregulation', c:'#ff3d6e', fill:'rgba(255,61,110,0.18)',
       d:'Same load, filter wide open, control overwhelmed — it turns inward as pathology.'};
   }
 
@@ -534,14 +534,14 @@
     var mo = outcome(state.L, state.C);
     ctx.beginPath();
     ctx.arc(mx, my, 14, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(174,245,34,0.22)';
+    ctx.fillStyle = 'rgba(255,174,46,0.28)';
     ctx.fill();
     ctx.beginPath();
     ctx.arc(mx, my, 8.5, 0, Math.PI*2);
     ctx.fillStyle = mo.c;
     ctx.fill();
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#fff'; ctx.stroke();
-    ctx.lineWidth = 2; ctx.strokeStyle = '#9ad81a';
+    ctx.lineWidth = 2; ctx.strokeStyle = '#ff9f1c';
     ctx.beginPath(); ctx.arc(mx, my, 11, 0, Math.PI*2); ctx.stroke();
   }
 
