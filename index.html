@@ -147,7 +147,8 @@
   .pillar p{font-size:14.5px;line-height:1.52;color:var(--ink-soft);margin:0;max-width:none}
   .pillar p strong{color:var(--ink)}
 
-  ol.refs{margin:16px 0 0;padding:0;list-style:none;counter-reset:r}
+  #refs{counter-reset:r}
+  ol.refs{margin:16px 0 0;padding:0;list-style:none}
   ol.refs li{counter-increment:r;position:relative;padding:9px 0 9px 40px;
     border-bottom:1px solid var(--line-soft);font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
   ol.refs li::before{content:counter(r);position:absolute;left:0;top:9px;font-family:var(--font-mono);
