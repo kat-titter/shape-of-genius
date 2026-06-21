@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Outlier Genius Report",
+  "schemaVersion": 1,
+  "description": "Scientific report on the cognitive-behavioral profiles of seven outlier minds (Grimes, Tesla, Musk, Newton, Erdős, Fischer, West) across social orientation, isolation, and substance use — synthesizing toward a shared latent construct (DeYoung's plasticity / Carson's shared-vulnerability model). Fully cited, evidence-tagged."
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Shape of Genius — A Cognitive-Behavioral Profile of Seven Outlier Minds</title>
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#15161a; --ink-soft:#41434b; --ink-faint:#75787f;
+    --line:#e3e1db; --line-soft:#eeece6;
+    --bg:#faf9f6; --panel:#ffffff;
+    --accent:#9a5b2e; --accent-soft:#f3ece4;
+    --tag-doc:#1f5c3d; --tag-self:#7a5a13; --tag-disp:#8a2f2f;
+    --maxw: 840px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;letter-spacing:.005em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:60px 28px 120px}
+  .kicker{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-size:34px;line-height:1.16;font-weight:680;letter-spacing:-.022em;margin:0 0 18px}
+  .lede{font-size:18.5px;line-height:1.55;color:var(--ink-soft);margin:0}
+  .byline{font-size:13.5px;color:var(--ink-faint);margin-top:24px;
+    padding-top:18px;border-top:1px solid var(--line)}
+  h2{font-size:13px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin:62px 0 6px}
+  h2 + .h2sub{font-size:24px;font-weight:660;letter-spacing:-.015em;margin:0 0 22px;line-height:1.25}
+  h3{font-size:18.5px;font-weight:650;letter-spacing:-.01em;margin:34px 0 8px}
+  p{margin:0 0 17px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+  a:hover{border-color:var(--accent)}
+  sup.ref{font-size:11px;line-height:0;font-weight:600}
+  sup.ref a{border:none;color:var(--accent);padding:0 1px}
+
+  /* TL;DR */
+  .tldr{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:28px 30px;margin:34px 0 8px}
+  .tldr .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    font-weight:700;margin-bottom:14px}
+  .tldr p{font-size:16.5px;line-height:1.56;color:var(--ink-soft);margin:0 0 12px}
+  .tldr p:last-child{margin-bottom:0}
+  .tldr b{color:var(--ink);font-weight:640}
+  .tldr .eqline{font-weight:650;color:var(--ink);letter-spacing:-.01em}
+  .tldr .eqline .op{color:var(--accent);font-weight:700;padding:0 3px}
+
+  /* interactive */
+  .viz{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:24px 24px 26px;margin:18px 0 10px;box-shadow:0 1px 2px rgba(20,20,25,.03)}
+  .viz .vhead{display:flex;justify-content:space-between;align-items:baseline;
+    flex-wrap:wrap;gap:8px;margin-bottom:4px}
+  .viz .vtitle{font-size:18px;font-weight:650;letter-spacing:-.01em}
+  .viz .vhint{font-size:13px;color:var(--ink-faint)}
+  .canvas-wrap{position:relative;width:100%}
+  canvas{display:block;width:100%;height:auto;border-radius:12px;cursor:grab;touch-action:none}
+  canvas:active{cursor:grabbing}
+  .readout{display:flex;align-items:center;gap:12px;margin:16px 2px 2px;flex-wrap:wrap}
+  .readout .dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .readout .otext{font-size:15px;font-weight:640;color:var(--ink)}
+  .readout .odesc{font-size:13.5px;color:var(--ink-faint);flex-basis:100%;margin-top:-2px}
+  .sliders{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;margin-top:20px}
+  .slider{display:flex;flex-direction:column;gap:5px}
+  .slider .srow{display:flex;justify-content:space-between;align-items:baseline}
+  .slider label{font-size:13px;font-weight:620;color:var(--ink)}
+  .slider .sval{font-size:12px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  .slider .scap{font-size:11.5px;color:var(--ink-faint);line-height:1.35}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;
+    background:var(--line);outline:none;margin:4px 0 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:17px;height:17px;border-radius:50%;background:var(--accent);cursor:pointer;
+    border:2px solid #fff;box-shadow:0 1px 3px rgba(20,20,25,.25)}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--accent);
+    cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px rgba(20,20,25,.25)}
+  .toggle{display:flex;align-items:center;gap:9px;margin-top:18px;font-size:13.5px;color:var(--ink-soft)}
+  .toggle input{width:15px;height:15px;accent-color:var(--accent)}
+  .vcap{font-size:12px;color:var(--ink-faint);margin:14px 2px 0;line-height:1.5}
+
+  .abstract{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:26px 28px;margin:30px 0 8px;font-size:16px;line-height:1.58;color:var(--ink-soft)}
+  .abstract strong{color:var(--ink)}
+  .note{background:var(--accent-soft);border-radius:12px;padding:18px 22px;
+    font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:24px 0}
+  .note b{color:var(--ink)}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0 6px;
+    border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+  caption{caption-side:bottom;text-align:left;font-size:12.5px;color:var(--ink-faint);padding:12px 16px;line-height:1.5}
+  th,td{text-align:left;vertical-align:top;padding:13px 15px;border-bottom:1px solid var(--line-soft)}
+  thead th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);
+    font-weight:600;background:#fcfbf9;position:sticky;top:0;border-bottom:1px solid var(--line)}
+  tbody th{font-weight:650;color:var(--ink);white-space:nowrap;font-size:14.5px}
+  tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
+  td .sub{display:block;color:var(--ink-faint);font-size:12.5px;margin-top:2px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;padding:2px 7px;border-radius:5px;vertical-align:middle}
+  .t-doc{color:var(--tag-doc);background:#e8f1ea}
+  .t-self{color:var(--tag-self);background:#f6efdc}
+  .t-disp{color:var(--tag-disp);background:#f4e4e2}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin:16px 0 0;font-size:13px;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+
+  .formula{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:12px;padding:24px 26px;margin:26px 0;font-size:17px;line-height:1.6}
+  .formula .eq{font-weight:650;color:var(--ink);letter-spacing:-.01em}
+  .formula .eq .op{color:var(--accent);font-weight:700;padding:0 4px}
+  .pillars{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  .pillar{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+  .pillar .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin-bottom:7px}
+  .pillar p{font-size:14.5px;line-height:1.52;color:var(--ink-soft);margin:0}
+  .pillar p strong{color:var(--ink)}
+
+  ol.refs{margin:16px 0 0;padding:0;list-style:none;counter-reset:r}
+  ol.refs li{counter-increment:r;position:relative;padding:9px 0 9px 40px;
+    border-bottom:1px solid var(--line-soft);font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+  ol.refs li::before{content:counter(r);position:absolute;left:0;top:9px;
+    font-size:11.5px;font-weight:700;color:var(--ink-faint);width:28px;text-align:right}
+  ol.refs li a{word-break:break-word}
+  .refgroup{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin:28px 0 4px}
+  .foot{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink-faint);line-height:1.55}
+  @media (max-width:560px){
+    .wrap{padding:40px 18px 90px}
+    h1{font-size:27px}
+    .pillars,.sliders{grid-template-columns:1fr}
+    body{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">Cognitive-Behavioral Profile · n = 7 · Interactive</div>
+  <h1>The Shape of Genius</h1>
+  <p class="lede">Seven outlier minds — Grimes, Tesla, Musk, Newton, Erd&#337;s, Fischer, West — and the single hidden variable that turns the same wiring into a breakthrough or a breakdown.</p>
+  <div class="byline">Three axes: social orientation · isolation · substances. Compiled June 2026 from primary biography, the interview record, and the peer-reviewed creativity-personality literature.</div>
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <div class="lbl">TL;DR</div>
+    <p>The "introverted, isolated, drug-fueled loner" is a composite <b>no single genius actually fits</b>. The surface traits scatter — Tesla's celibate solitude vs. Erd&#337;s's homeless hyper-collaboration; Newton's silence vs. West's broadcast.</p>
+    <p>What converges is one level down: an <b>over-tuned exploratory system</b> — high Openness plus a leaky attentional filter (low latent inhibition). Eminent creators are ~7&times; more likely to have that leaky filter.</p>
+    <p class="eqline">disinhibition <span class="op">+</span> openness <span class="op">+</span> drive <span class="op">&times;</span> cognitive control <span class="op">&rarr;</span> genius</p>
+    <p>Remove the <b>control</b> term and the exact same inputs produce psychopathology instead. Newton's calculus and Fischer's collapse run on one circuit. Isolation, introversion, and stimulants are <b>downstream readouts</b> — not the cause. Drag the marker below to feel it.</p>
+  </div>
+
+  <!-- INTERACTIVE -->
+  <div class="viz">
+    <div class="vhead">
+      <div class="vtitle">The genius phase diagram</div>
+      <div class="vhint">drag the marker · or use the sliders</div>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="phase" aria-label="Interactive phase diagram: exploratory load versus cognitive control"></canvas>
+    </div>
+    <div class="readout">
+      <span class="dot" id="oDot"></span>
+      <span class="otext" id="oText">Creative achievement</span>
+      <span class="odesc" id="oDesc"></span>
+    </div>
+    <div class="sliders">
+      <div class="slider">
+        <div class="srow"><label for="sLoad">Exploratory load</label><span class="sval" id="vLoad">82</span></div>
+        <input type="range" id="sLoad" min="0" max="100" value="82">
+        <div class="scap">Openness + leaky filter (low latent inhibition) + drive/energy, combined. The raw flood of associations.</div>
+      </div>
+      <div class="slider">
+        <div class="srow"><label for="sCtrl">Cognitive control</label><span class="sval" id="vCtrl">84</span></div>
+        <input type="range" id="sCtrl" min="0" max="100" value="84">
+        <div class="scap">IQ + working memory + cognitive flexibility. The machinery that channels the flood instead of drowning in it.</div>
+      </div>
+    </div>
+    <label class="toggle"><input type="checkbox" id="showFigs" checked> Show the seven figures <span style="color:var(--ink-faint)">(illustrative positions, not measured data)</span></label>
+    <div class="vcap">The field is the model, not a dataset. The same exploratory load (horizontal) lands as <b>achievement</b>, <b>volatility</b>, or <b>dysregulation</b> depending only on whether control (vertical) keeps pace. Figure placements are schematic illustrations of the argument — they are not psychometric measurements of real people.</div>
+  </div>
+
+  <div class="abstract">
+    <strong>Abstract.</strong> Popular accounts collapse "genius eccentricity" into one trait. The biographical record refuses that: across these seven, the surface behaviors diverge and two cases (Erd&#337;s, West) invert the stereotype outright. What converges is the generative layer beneath. The creativity-personality literature now offers a credible common cause — not "madness," but an over-active exploratory drive: high Openness/Intellect plus reduced cognitive filtering, governed in the productive cases by high cognitive control, plausibly grounded in dopaminergic function. This report maps each figure onto social orientation, isolation, and substance use, then argues that <strong>DeYoung's plasticity metatrait</strong> and <strong>Carson's shared-vulnerability model</strong> are the best-supported candidates for the latent construct — while flagging hard where the data is thin and where the famous quotes are wrong.</div>
+
+  <div class="note">
+    <b>Epistemic key.</b> Every claim is tagged at its source.
+    <span class="tag t-doc">documented</span> = primary record or firsthand admission, corroborated.
+    <span class="tag t-self">self-reported</span> = the subject's own claim, not independently confirmed.
+    <span class="tag t-disp">disputed</span> = contested, secondhand, or unverified. Retrospective psychiatric labels for the dead are inferences, never diagnoses.
+  </div>
+
+  <!-- MATRIX -->
+  <h2>The Comparison</h2>
+  <div class="h2sub">Three axes, seven minds</div>
+  <p>Read down a column for one behavioral dimension; across a row for one person. The immediate lesson is dispersion — on every axis the cases scatter, and Erd&#337;s and West actively invert the "introverted hermit" the others seem to confirm.</p>
+
+  <div class="scroll">
+    <table>
+      <caption>Tags refer to strength of evidence, not clinical judgment. "Inferred" psychiatric notes are biographical, not diagnostic.</caption>
+      <thead><tr><th>Figure</th><th>Social orientation</th><th>Isolation</th><th>Substances &amp; sleep</th></tr></thead>
+      <tbody>
+        <tr>
+          <th scope="row">Grimes<span class="sub" style="font-weight:400;color:var(--ink-faint)">b. 1988</span></th>
+          <td>Self-described introvert with stage fright; persona-splitting — "the truest version of me would never&hellip; walk on a stage."<sup class="ref"><a href="#r1">1</a></sup> <span class="tag t-self">self-reported</span></td>
+          <td>Blacked-out windows, ~3 weeks recording <em>Visions</em> (2011&ndash;12) as deliberate method.<sup class="ref"><a href="#r3">3</a></sup> <span class="tag t-self">self-reported</span></td>
+          <td>Amphetamines + sleep deprivation during <em>Visions</em>; publicly disavowed the drug narrative (2014); 2019 "biohacking" phase.<sup class="ref"><a href="#r4">4</a></sup><sup class="ref"><a href="#r5">5</a></sup> <span class="tag t-disp">disavowed</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Tesla<span class="sub" style="font-weight:400;color:var(--ink-faint)">1856&ndash;1943</span></th>
+          <td>Lifelong celibate by stated choice; germophobia &amp; phobias — yet a charismatic dinner host in his prime.<sup class="ref"><a href="#r7">7</a></sup><sup class="ref"><a href="#r8">8</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Theorized solitude as the engine of invention: "Be alone — that is the secret of invention" (NYT, 8 Apr 1934). Reclusive hotel years to 1943.<sup class="ref"><a href="#r9">9</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>No recreational drugs. Claimed ~2 hrs sleep/night — self-reported, treat as legend; whisky &amp; coffee, later abandoned.<sup class="ref"><a href="#r10">10</a></sup> <span class="tag t-disp">disputed</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Musk<span class="sub" style="font-weight:400;color:var(--ink-faint)">b. 1971</span></th>
+          <td>Bullied, introverted child; self-disclosed Asperger's on SNL (2021); consciously "learned" to perform.<sup class="ref"><a href="#r11">11</a></sup><sup class="ref"><a href="#r12">12</a></sup> <span class="tag t-self">self-reported</span></td>
+          <td>Childhood ~10 hrs/day reading; "lived" at the factory 3 yrs during Model 3 (immersion, not seclusion).<sup class="ref"><a href="#r13">13</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Ambien (NYT 2018); cannabis on Rogan (2018); prescription ketamine, his own confirmation (2024). Broader WSJ/NYT claims denied.<sup class="ref"><a href="#r14">14</a></sup><sup class="ref"><a href="#r16">16</a></sup> <span class="tag t-doc">documented</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Newton<span class="sub" style="font-weight:400;color:var(--ink-faint)">1643&ndash;1727</span></th>
+          <td>Reclusive, few friendships; Westfall: relations "on a basis of hostility or domination." Probable lifelong celibate.<sup class="ref"><a href="#r17">17</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Plague years 1665&ndash;67 at Woolsthorpe — calculus, optics, gravitation in isolation. ("Annus mirabilis" partly mythologized.)<sup class="ref"><a href="#r19">19</a></sup><sup class="ref"><a href="#r21">21</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>No recreational drugs. Heavy mercury exposure from alchemy; 1693 breakdown. Mercury-poisoning cause is hypothesis only.<sup class="ref"><a href="#r22">22</a></sup><sup class="ref"><a href="#r23">23</a></sup> <span class="tag t-disp">hypothesis</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Erd&#337;s<span class="sub" style="font-weight:400;color:var(--ink-faint)">1913&ndash;1996</span></th>
+          <td><b>Counter-case.</b> Hyper-social: ~511 collaborators, "mathematics is a social activity"; but no home, dependent on hosts.<sup class="ref"><a href="#r24">24</a></sup> <span class="tag t-doc">documented</span></td>
+          <td><b>Counter-case.</b> Never alone — peak output (~1,525 papers) via relentless collaboration, not solitude.<sup class="ref"><a href="#r25">25</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Amphetamines + caffeine, ~19-hr days. Won Graham's $500 month-clean bet, then: "you've set mathematics back a month."<sup class="ref"><a href="#r24">24</a></sup> <span class="tag t-doc">documented</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Fischer<span class="sub" style="font-weight:400;color:var(--ink-faint)">1943&ndash;2008</span></th>
+          <td>Progressive withdrawal after 1972; persecutory beliefs. Posthumous read: paranoid personality, not schizophrenia.<sup class="ref"><a href="#r27">27</a></sup><sup class="ref"><a href="#r28">28</a></sup> <span class="tag t-doc">documented</span></td>
+          <td><b>Decline, not engine.</b> Decades of reclusion &amp; fugitive years (1992&ndash;2004) — isolation as collapse, not creation.<sup class="ref"><a href="#r27">27</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>No documented drug use. Mental illness without substances — the control on the substance axis.<sup class="ref"><a href="#r28">28</a></sup> <span class="tag t-doc">documented</span></td>
+        </tr>
+        <tr>
+          <th scope="row">West<span class="sub" style="font-weight:400;color:var(--ink-faint)">b. 1977</span></th>
+          <td><b>Extravert pole.</b> Grandiose public self ("greatest artist&hellip;"); self-disclosed bipolar disorder (2018).<sup class="ref"><a href="#r31">31</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Hawaii "exile" for <em>MBDTF</em> (2010) — but communal immersion (a sealed rap-camp), not solitude. Later Wyoming sessions.<sup class="ref"><a href="#r29">29</a></sup> <span class="tag t-doc">documented</span></td>
+          <td>Self-reported opioid addiction after 2016 liposuction, preceding hospitalization; framed as mental-health crisis.<sup class="ref"><a href="#r30">30</a></sup> <span class="tag t-self">self-reported</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <span><span class="tag t-doc">documented</span> primary / corroborated</span>
+    <span><span class="tag t-self">self-reported</span> subject's own claim</span>
+    <span><span class="tag t-disp">disputed</span> contested / unverified</span>
+  </div>
+
+  <!-- READING THE AXES -->
+  <h2>Reading The Axes</h2>
+  <div class="h2sub">What actually varies, and what doesn't</div>
+
+  <h3>Social orientation splits into three things we keep confusing</h3>
+  <p>"Introversion" is doing too much work in the genius literature. The record forces a three-way split: <b>trait introversion</b> proper (Grimes, the young Musk, Newton); <b>clinical withdrawal</b> (Fischer's paranoid reclusion — a symptom, not a temperament); and <b>eccentric arrangement that is not low-social at all</b> — Erd&#337;s was gregarious to the point of homelessness, and Tesla, the archetypal loner, was a magnetic conversationalist who simply declined intimacy on principle.<sup class="ref"><a href="#r7">7</a></sup> Collapse these and you get the folk myth. Keep them apart and the introversion axis stops predicting anything on its own — the first clue that the real variable lives elsewhere.</p>
+
+  <h3>Isolation is an input in some cases and an output in others</h3>
+  <p>Three figures used solitude as a deliberate instrument. Tesla theorized it outright — and the quote is real, traced to a <em>New York Times</em> interview of <b>8 April 1934</b>, not the "1935" that circulates secondhand.<sup class="ref"><a href="#r9">9</a></sup> Newton's plague-year retreat produced calculus, optics, and gravitation, though historians rightly deflate the single-miraculous-year compression into an "annus mythologicus."<sup class="ref"><a href="#r21">21</a></sup> Grimes blacked out her windows on purpose.<sup class="ref"><a href="#r3">3</a></sup> But the same word covers different objects: West's Hawaii "exile" was a <em>communal</em> bubble, and Musk's factory years were about visibility, not seclusion.<sup class="ref"><a href="#r13">13</a></sup> Fischer is the dark mirror — isolation as decline, nothing coming out the other side. And Erd&#337;s ran the engine in reverse, producing more than any mathematician in history by never being alone.<sup class="ref"><a href="#r25">25</a></sup> Solitude is not the construct; it's one way some exploratory minds protect attention — and others don't need.</p>
+
+  <h3>Substances cluster as stimulants and as self-medication — rarely as the cause of the gift</h3>
+  <p>Tagged honestly, the drug evidence splits clean. <b>Stimulant-as-tool</b>: Erd&#337;s's amphetamines are the cleanest case — the Graham bet is the tell (a month clean, no work, "you've set mathematics back a month," then back on).<sup class="ref"><a href="#r24">24</a></sup> Grimes's <em>Visions</em> story sits here, though she later disavowed it.<sup class="ref"><a href="#r5">5</a></sup> <b>Self-medication</b>: Musk's prescription ketamine for depressive states and West's post-surgical opioids treat a state rather than engineer one.<sup class="ref"><a href="#r16">16</a></sup><sup class="ref"><a href="#r30">30</a></sup> Then the <b>controls</b>: Tesla, Newton, and Fischer used no recreational drugs at all — which means the shared cognitive signature cannot be pharmacological. Chemistry modulates the temperament; it does not manufacture it. (Two myths to bury: Tesla's "two hours of sleep" is self-reported legend, and "a mathematician is a machine for turning coffee into theorems" is Alfr&eacute;d R&eacute;nyi's line, not Erd&#337;s's.<sup class="ref"><a href="#r26">26</a></sup>)</p>
+
+  <!-- SYNTHESIS -->
+  <h2>The Synthesis</h2>
+  <div class="h2sub">The latent construct under the surface</div>
+  <p>If the surface traits scatter and contradict, the question is what generative process could produce <em>all</em> these profiles — the celibate hermit and the homeless collaborator, the stimulant user and the teetotaler, the manic broadcaster and the silent recluse. The literature has converged on an answer that is neither "madness" nor "high IQ" but something more specific: an <b>over-tuned exploratory system</b>.</p>
+
+  <h3>Openness/Intellect is the trait, not extraversion</h3>
+  <p>The most replicated finding in the field: <b>Openness to Experience</b> — not extraversion — is the dominant personality correlate of creative achievement (Feist's 1998 meta-analysis), which also found eminent creators reliably <em>lower</em> in agreeableness and conscientiousness.<sup class="ref"><a href="#r32">32</a></sup> That "disagreeable, undutiful, wide-open" profile fits Newton's combativeness as readily as the artists. DeYoung's refinement: Openness splits into an <b>Openness</b> aspect (aesthetic — predicts <em>arts</em>, the Grimes/West pole) and an <b>Intellect</b> aspect (abstract — predicts <em>science</em>, the Tesla/Newton/Erd&#337;s pole).<sup class="ref"><a href="#r33">33</a></sup> Same domain, two faces — which is why a musician and a mathematician can share a temperament while looking nothing alike.</p>
+
+  <h3>The leaky filter: reduced latent inhibition</h3>
+  <p>The hardest datum here is Carson, Peterson &amp; Higgins (2003): in high-IQ samples, <b>eminent creative achievers were ~7&times; more likely to have low latent inhibition</b> — a reduced ability to screen out stimuli the brain has tagged irrelevant.<sup class="ref"><a href="#r40">40</a></sup> A leaky filter floods the mind with material that "should" have been ignored; the apophenic, overinclusive style that results is the engine of novel connection (Eysenck's "overinclusive thinking" anticipated this).<sup class="ref"><a href="#r45">45</a></sup> The crucial detail is the interaction: low latent inhibition predicts <em>achievement</em> with high IQ and working memory — and <em>psychopathology</em> without. The open filter is necessary but not sufficient; what you do with the flood depends on the control system downstream. <em>(That interaction is exactly what the phase diagram above renders.)</em></p>
+
+  <div class="formula">
+    <div class="eq">cognitive disinhibition <span class="op">+</span> high openness / exploratory drive <span class="op">+</span> hypomanic energy <span class="op">&times;</span> high cognitive control <span class="op">&rarr;</span> creative achievement</div>
+    <p style="margin:14px 0 0;font-size:14.5px;color:var(--ink-soft)">Remove the control term and the same inputs yield psychopathology. This is Carson's shared-vulnerability model stated at the trait level — the single most useful formula in the field for this roster.<sup class="ref"><a href="#r41">41</a></sup></p>
+  </div>
+
+  <h3>Two best-supported candidates for the common factor — and they're compatible</h3>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="lbl">The trait expression</div>
+      <p><strong>DeYoung's Plasticity metatrait.</strong> The shared variance of Openness/Intellect <em>and</em> Extraversion, theorized to index global <strong>dopaminergic</strong> tone — the neuromodulator of exploration. Dopamine drives engagement with reward (behavioral exploration) and the value of information (cognitive exploration), unifying Openness, drive, and reduced latent inhibition under one system.<sup class="ref"><a href="#r44">44</a></sup></p>
+    </div>
+    <div class="pillar">
+      <div class="lbl">The risk architecture</div>
+      <p><strong>Carson's shared-vulnerability model.</strong> The same biological risk factors — cognitive disinhibition, novelty-salience, neural hyperconnectivity — produce creativity <em>or</em> illness depending on protective factors (IQ, working memory, flexibility). Answers why most psychosis-prone people aren't creative, and most creatives aren't ill.<sup class="ref"><a href="#r41">41</a></sup></p>
+    </div>
+  </div>
+  <p>Two descriptions of one system: plasticity is the <em>trait</em>, shared-vulnerability is the <em>risk/protective</em> wiring around it. The molecular evidence backs the shared substrate — Power et al. (2015) found <b>polygenic risk for schizophrenia and bipolar disorder predicts membership in national artistic societies</b> in ~86,000 Icelanders, with creatives' genetic loading roughly halfway between the general population and patients.<sup class="ref"><a href="#r39">39</a></sup> Swedish total-population registries show bipolar disorder overrepresented in creative and scientific occupations, and creative professions elevated among the <em>healthy relatives</em> of patients — heritable liability, expressed as gift in some carriers and illness in others.<sup class="ref"><a href="#r38">38</a></sup></p>
+
+  <h3>Where each axis lands in the model</h3>
+  <p>The three axes are <em>downstream readouts</em>, not independent variables. <b>Social orientation</b>: high plasticity doesn't require extraversion — the cognitive-exploration side can run with the social side dialed down (Tesla, Newton, Grimes), or both up (West). <b>Isolation</b>: a protective strategy for an over-flooded attentional system — voluntary in the productive cases, pathological in Fischer's. <b>Substances</b>: stimulants amplify the drive term (Erd&#337;s, early Grimes), depressants and dissociatives medicate its cost (Musk, West) — but the teetotaler cases prove the temperament is upstream of any chemistry.</p>
+
+  <!-- LIMITS -->
+  <h2>The Limits</h2>
+  <div class="h2sub">Where this argument is weakest</div>
+  <p>The soft spots are real. <b>n = 7 is an anecdote, not a sample</b> — selected <em>because</em> they are famous outliers, the textbook case of sampling on the dependent variable; it can illustrate a model, never test it. <b>Retrospective diagnosis is the field's original sin</b>: every label on Tesla, Newton, and arguably Fischer is biographical inference, and the same flaw undermines the historiometric work (Jamison's <em>Touched with Fire</em>, the autism-eminence claims alike).<sup class="ref"><a href="#r36">36</a></sup> <b>The bipolar&rarr;creativity link — the most culturally prominent strand — is the weakest empirically</b>; Andreasen's seminal study ran on 30 writers with no blinding, and critics (Schlesinger's <em>Insanity Hoax</em>) argue the whole "mad genius" edifice rests on tiny, unblinded, circular samples.<sup class="ref"><a href="#r35">35</a></sup><sup class="ref"><a href="#r47">47</a></sup> Simonton's "mad-genius paradox" is the careful resolution: the correlation may be non-monotonic — more psychopathology among the <em>most eminent</em>, yet creative people <em>overall</em> often healthier than non-creatives.<sup class="ref"><a href="#r46">46</a></sup> Read this as a well-sourced hypothesis about what generates the pattern — not a diagnosis of seven people, three of them dead for a century.</p>
+
+  <!-- REFERENCES -->
+  <h2 id="refs">References</h2>
+  <div class="h2sub">Sources retrieved for this report</div>
+
+  <div class="refgroup">Biographical &amp; interview record</div>
+  <ol class="refs">
+    <li id="r1">Grimes, cover interview, <i>The FADER</i> (2015). <a href="https://www.thefader.com/2015/07/28/grimes-cover-story-interview">thefader.com</a></li>
+    <li id="r2">Grimes on performing &amp; mental health, <i>Fox News</i> (2021). <a href="https://www.foxnews.com/entertainment/alter-ego-grimes-bad-mental-health-effects">foxnews.com</a></li>
+    <li id="r3"><i>Visions</i> (Grimes album), recording conditions — Wikipedia. <a href="https://en.wikipedia.org/wiki/Visions_(Grimes_album)">en.wikipedia.org</a></li>
+    <li id="r4">Grimes disputes drug quotes on her Wikipedia page, <i>Stereogum</i> (2014). <a href="https://www.stereogum.com/1699238/grimes-calls-out-the-trolls-putting-pro-drug-statements-on-her-wikipedia/news/">stereogum.com</a></li>
+    <li id="r5">Grimes anti-drug statement / disavowal, <i>SPIN</i> (2014). <a href="https://www.spin.com/2014/08/grimes-anti-drug-tumblr-wikipedia-amphetamines/">spin.com</a></li>
+    <li id="r6">Grimes biohacking &amp; NAD+ phase, <i>Document Journal</i> (2019). <a href="https://www.documentjournal.com/2019/07/grimes-eye-surgery-proves-why-were-all-still-paranoid-about-androids/">documentjournal.com</a></li>
+    <li id="r7">"The Extraordinary Life of Nikola Tesla," <i>Smithsonian Magazine</i>. <a href="https://www.smithsonianmag.com/innovation/extraordinary-life-nikola-tesla-180967758/">smithsonianmag.com</a></li>
+    <li id="r8">Tesla on marriage &amp; celibacy (David J. Kent). <a href="https://davidjkent-writer.com/2019/10/01/nikola-teslas-views-on-marriage-and-celibacy/">davidjkent-writer.com</a></li>
+    <li id="r9">"Be alone, that is the secret of invention" — provenance confirmed to NYT, 8 Apr 1934 (O.E. Dunlap Jr.), <i>Quote Investigator</i>. <a href="https://quoteinvestigator.com/2021/10/06/invent-alone/">quoteinvestigator.com</a></li>
+    <li id="r10">Tesla 1935 interview (Viereck), lifestyle &amp; sleep — Tesla Universe. <a href="https://teslauniverse.com/nikola-tesla/articles/nikola-teslas-youth-and-strength-78">teslauniverse.com</a></li>
+    <li id="r11">Elon Musk — Wikipedia (childhood, SNL Asperger's disclosure). <a href="https://en.wikipedia.org/wiki/Elon_Musk">en.wikipedia.org</a></li>
+    <li id="r12">Ashlee Vance, <i>Elon Musk</i> (2015), biography overview. <a href="https://www.shortform.com/blog/elon-musk-by-ashlee-vance/">shortform.com</a></li>
+    <li id="r13">Musk on sleeping at the factory ~3 years — Startup Archive. <a href="https://www.startuparchive.org/p/elon-musk-explains-why-he-slept-on-the-tesla-factory-floor-for-3-years">startuparchive.org</a></li>
+    <li id="r14">Musk &amp; Ambien (re: NYT, Aug 2018), <i>Fortune</i>. <a href="https://fortune.com/2018/08/17/elon-musk-ambien-tweeting-nyt/">fortune.com</a></li>
+    <li id="r15">Musk smokes cannabis on Joe Rogan (2018), <i>Washington Post</i>. <a href="https://www.washingtonpost.com/technology/2018/09/07/elon-musk-smokes-weed-joe-rogan-podcast/">washingtonpost.com</a></li>
+    <li id="r16">Musk confirms prescription ketamine, Don Lemon interview (2024), <i>CNN</i>. <a href="https://www.cnn.com/2024/03/18/tech/elon-musk-ketamine-use-don-lemon-interview">cnn.com</a></li>
+    <li id="r17">R.S. Westfall, <i>Never at Rest: A Biography of Isaac Newton</i> (1981); Kirkus on Westfall. <a href="https://www.kirkusreviews.com/book-reviews/richard-s-westfall/the-life-of-isaac-newton/">kirkusreviews.com</a></li>
+    <li id="r18">"The Loneliest Genius" (Newton), <i>Nautilus</i>. <a href="https://nautil.us/the-loneliest-genius-235187/">nautil.us</a></li>
+    <li id="r19">Newton's plague-year discoveries, <i>Biography.com</i>. <a href="https://www.biography.com/scientists/isaac-newton-quarantine-plague-discoveries">biography.com</a></li>
+    <li id="r20">"Isaac Newton," <i>Stanford Encyclopedia of Philosophy</i>. <a href="https://plato.stanford.edu/entries/newton/">plato.stanford.edu</a></li>
+    <li id="r21">"Annus Mythologicus" — historiographic correction (T. Christie). <a href="https://thonyc.wordpress.com/2020/04/15/annus-mythologicus/">thonyc.wordpress.com</a></li>
+    <li id="r22">Later life of Isaac Newton — 1693 breakdown, Pepys correspondence — Wikipedia. <a href="https://en.wikipedia.org/wiki/Later_life_of_Isaac_Newton">en.wikipedia.org</a></li>
+    <li id="r23">Spargo &amp; Pounds (1979), Newton hair-metal analysis &amp; mercury-poisoning hypothesis, <i>Notes &amp; Records of the Royal Society</i>. <a href="https://web.pa.msu.edu/courses/2008spring/ISP213H/welcome/welcome_assets/newtonHair.pdf">PDF</a></li>
+    <li id="r24">Paul Erd&#337;s — amphetamines, Graham's $500 bet, itinerant collaboration — Wikipedia. <a href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s">en.wikipedia.org</a></li>
+    <li id="r25">Erd&#337;s number — collaborative output — Wikipedia. <a href="https://en.wikipedia.org/wiki/Erd%C5%91s_number">en.wikipedia.org</a></li>
+    <li id="r26">"Coffee into theorems" attributed to Alfr&eacute;d R&eacute;nyi, not Erd&#337;s, <i>Quote Investigator</i>. <a href="https://quoteinvestigator.com/2026/06/13/mathematician-coffee/">quoteinvestigator.com</a></li>
+    <li id="r27">Bobby Fischer — withdrawal, paranoia, fugitive years — Wikipedia. <a href="https://en.wikipedia.org/wiki/Bobby_Fischer">en.wikipedia.org</a></li>
+    <li id="r28">"A Psychological Autopsy of Bobby Fischer" (Ponterotto), <i>Pacific Standard</i>. <a href="https://psmag.com/social-justice/a-psychological-autopsy-of-bobby-fischer-25959/">psmag.com</a></li>
+    <li id="r29"><i>My Beautiful Dark Twisted Fantasy</i> — Hawaii sessions — Wikipedia. <a href="https://en.wikipedia.org/wiki/My_Beautiful_Dark_Twisted_Fantasy">en.wikipedia.org</a></li>
+    <li id="r30">Kanye West on opioid addiction after 2016 liposuction, <i>Refinery29</i>. <a href="https://www.refinery29.com/en-us/2018/05/197998/kanye-west-opiod-addiction-liposuction-reveal">refinery29.com</a></li>
+    <li id="r31">"Is Kanye West Just a Grandiose, Attention-Seeking Rapper?" <i>Psychology Today</i>. <a href="https://www.psychologytoday.com/us/blog/take-charge-bipolar-disorder/202007/is-kanye-west-just-grandiose-attention-seeking-rapper">psychologytoday.com</a></li>
+  </ol>
+
+  <div class="refgroup">Psychometric &amp; clinical literature</div>
+  <ol class="refs" start="32">
+    <li id="r32">Feist, G.J. (1998). A meta-analysis of personality in scientific and artistic creativity. <i>PSPR</i>, 2(4), 290&ndash;309. <a href="https://gwern.net/doc/psychology/personality/1998-feist.pdf">PDF</a></li>
+    <li id="r33">Kaufman, S.B., et al. (2016). Openness and Intellect differentially predict creative achievement in arts and sciences. <i>J. Personality</i>, 84(2). <a href="https://scottbarrykaufman.com/wp-content/uploads/2015/01/Kaufman-et-al.-2015.pdf">PDF</a></li>
+    <li id="r34">DeYoung, Grazioplene &amp; Peterson (2012). From madness to genius: the Openness/Intellect domain as a paradoxical simplex. <i>JRP</i>, 46. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0092656611001644">sciencedirect.com</a></li>
+    <li id="r35">Andreasen, N.C. (1987). Creativity and mental illness: prevalence rates in writers and first-degree relatives. <i>Am. J. Psychiatry</i>, 144(10). <a href="https://pubmed.ncbi.nlm.nih.gov/3499088/">PubMed</a></li>
+    <li id="r36">Jamison, K.R. (1993). <i>Touched with Fire</i>. <a href="https://en.wikipedia.org/wiki/Touched_with_Fire_(book)">overview</a></li>
+    <li id="r37">Fulford, Johnson &amp; Carver (2008). Approach goals, behavioral activation and risk of hypomania. <i>PAID</i>. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0191886907001432">sciencedirect.com</a></li>
+    <li id="r38">Kyaga, S., et al. (2011). Creativity and mental disorder: family study of 300,000 people. <i>BJP</i>, 199. <a href="https://pubmed.ncbi.nlm.nih.gov/21653945/">PubMed</a></li>
+    <li id="r39">Power, R.A., et al. (2015). Polygenic risk scores for schizophrenia and bipolar disorder predict creativity. <i>Nature Neuroscience</i>, 18. <a href="https://www.nature.com/articles/nn.4040">nature.com</a></li>
+    <li id="r40">Carson, Peterson &amp; Higgins (2003). Decreased latent inhibition is associated with increased creative achievement. <i>JPSP</i>, 85(3). <a href="https://pubmed.ncbi.nlm.nih.gov/14498785/">PubMed</a></li>
+    <li id="r41">Carson, S.H. (2011). Creativity and psychopathology: a shared vulnerability model. <i>Can. J. Psychiatry</i>, 56(3). <a href="https://journals.sagepub.com/doi/10.1177/070674371105600304">sagepub.com</a></li>
+    <li id="r42">Baron-Cohen, S. (2009). The empathizing&ndash;systemizing (E-S) theory. <i>Annals NYAS</i>, 1156. <a href="https://nyaspubs.onlinelibrary.wiley.com/doi/abs/10.1111/j.1749-6632.2009.04467.x">wiley.com</a></li>
+    <li id="r43">Greenberg, Baron-Cohen, et al. (2018). Testing the E&ndash;S theory in half a million people. <i>PNAS</i>, 115(48). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6275492/">PMC</a></li>
+    <li id="r44">DeYoung, C.G. (2013). The neuromodulator of exploration: dopamine in personality. <i>Front. Hum. Neurosci.</i> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827581/">PMC</a></li>
+    <li id="r45">Eysenck, H.J. (1995). <i>Genius: The Natural History of Creativity</i> (psychoticism / overinclusive thinking). <a href="http://www.personalityresearch.org/papers/porzio.html">overview</a></li>
+    <li id="r46">Simonton, D.K. (2014). The mad-genius paradox. <i>Perspectives on Psychological Science</i>, 9(5). <a href="https://journals.sagepub.com/doi/abs/10.1177/1745691614543973">sagepub.com</a></li>
+    <li id="r47">Schlesinger, J. — <i>The Insanity Hoax</i> &amp; "The persistent myth of the mad genius." <a href="https://www.skeptic.com/article/the-persistent-myth-of-the-mad-genius/">skeptic.com</a></li>
+  </ol>
+
+  <div class="foot">
+    Citation integrity: every numbered reference points to a source actually retrieved during this research. Disputed claims (Tesla's sleep, Newton's mercury causation, Musk's broader drug allegations) are tagged, not asserted; the "1934 not 1935" Tesla date and the R&eacute;nyi-not-Erd&#337;s attribution correct commonly repeated errors. The phase diagram and figure placements are a schematic of the model — illustrative, not psychometric measurement. The synthesis is a hypothesis supported by the cited literature, not a clinical diagnosis of any individual.
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var cv = document.getElementById('phase');
+  var ctx = cv.getContext('2d');
+  var sLoad = document.getElementById('sLoad'), sCtrl = document.getElementById('sCtrl');
+  var vLoad = document.getElementById('vLoad'), vCtrl = document.getElementById('vCtrl');
+  var oDot = document.getElementById('oDot'), oText = document.getElementById('oText'), oDesc = document.getElementById('oDesc');
+  var showFigs = document.getElementById('showFigs');
+  var accent = '#9a5b2e';
+
+  var state = { L: 82, C: 84 };
+
+  var figs = [
+    {n:'Newton',  L:86, C:92, side:'r'},
+    {n:'Erdős', L:69, C:88, side:'l'},
+    {n:'Tesla',   L:92, C:82, side:'r'},
+    {n:'Musk',    L:77, C:78, side:'l'},
+    {n:'Grimes',  L:73, C:69, side:'l'},
+    {n:'Kanye',   L:90, C:55, side:'r'},
+    {n:'Fischer', L:84, C:35, side:'r'}
+  ];
+
+  function outcome(L, C){
+    if (L < 32) return {k:'Conventional', c:'#8a8c92', fill:'rgba(130,132,138,0.11)',
+      d:'Filter tight, associations stay conventional — not enough raw material to be a breakthrough or a breakdown.'};
+    var r = C / Math.max(L, 1);
+    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(154,91,46,0.22)',
+      d:'High load, and control keeps pace. The flood gets channeled into work.'};
+    if (r >= 0.55) return {k:'Volatile / mixed', c:'#a9772a', fill:'rgba(180,140,40,0.18)',
+      d:'Output and instability trade places as control fluctuates with state.'};
+    return {k:'Dysregulation', c:'#9a3b34', fill:'rgba(150,60,55,0.18)',
+      d:'Same load, filter wide open, control overwhelmed — it turns inward as pathology.'};
+  }
+
+  var pad = {l:54, r:18, t:16, b:42};
+  var W=0, H=0;
+
+  function px(L){ return pad.l + (L/100) * (W - pad.l - pad.r); }
+  function py(C){ return pad.t + (1 - C/100) * (H - pad.t - pad.b); }
+
+  function resize(){
+    var cssW = cv.clientWidth || 600;
+    var cssH = Math.round(cssW * 0.66);
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(cssW * dpr);
+    cv.height = Math.round(cssH * dpr);
+    cv.style.height = cssH + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    W = cssW; H = cssH;
+    draw();
+  }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function drawLabel(x, y, text, side){
+    ctx.font = '600 11.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
+    var tw = ctx.measureText(text).width;
+    var px0 = (side === 'r') ? x + 9 : x - 9 - tw - 12;
+    var py0 = y - 9;
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    roundRect(px0, py0, tw + 12, 18, 5);
+    ctx.fill();
+    ctx.fillStyle = '#33353b';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText(text, px0 + 6, py0 + 9.5);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // phase field heatmap
+    var step = 2.4;
+    for (var L=0; L<=100; L+=step){
+      for (var C=0; C<=100; C+=step){
+        var o = outcome(L + step/2, C + step/2);
+        ctx.fillStyle = o.fill;
+        var x0 = px(L), x1 = px(L+step);
+        var y1 = py(C), y0 = py(C+step);
+        ctx.fillRect(x0, y0, (x1-x0)+0.6, (y1-y0)+0.6);
+      }
+    }
+
+    // plot border
+    ctx.strokeStyle = '#e3e1db';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px(0), py(100), px(100)-px(0), py(0)-py(100));
+
+    // axis labels
+    ctx.fillStyle = '#75787f';
+    ctx.font = '600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('EXPLORATORY LOAD  →', (px(0)+px(100))/2, H - pad.b + 22);
+    ctx.save();
+    ctx.translate(15, (py(0)+py(100))/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('COGNITIVE CONTROL  →', 0, 0);
+    ctx.restore();
+
+    // low/high ticks
+    ctx.fillStyle = '#9a9da3';
+    ctx.font = '500 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillText('low', px(0), H - pad.b + 7);
+    ctx.textAlign='right';
+    ctx.fillText('high', px(100), H - pad.b + 7);
+
+    // figures
+    if (showFigs.checked){
+      for (var i=0;i<figs.length;i++){
+        var f = figs[i];
+        var fx = px(f.L), fy = py(f.C);
+        var fo = outcome(f.L, f.C);
+        ctx.beginPath();
+        ctx.arc(fx, fy, 4.5, 0, Math.PI*2);
+        ctx.fillStyle = fo.c;
+        ctx.fill();
+        ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke();
+        drawLabel(fx, fy, f.n, f.side);
+      }
+    }
+
+    // current marker
+    var mx = px(state.L), my = py(state.C);
+    var mo = outcome(state.L, state.C);
+    ctx.beginPath();
+    ctx.arc(mx, my, 13, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(21,22,26,0.06)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(mx, my, 8.5, 0, Math.PI*2);
+    ctx.fillStyle = mo.c;
+    ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(21,22,26,0.25)';
+    ctx.beginPath(); ctx.arc(mx, my, 9.7, 0, Math.PI*2); ctx.stroke();
+  }
+
+  function syncReadout(){
+    var o = outcome(state.L, state.C);
+    oDot.style.background = o.c;
+    oText.textContent = o.k;
+    oText.style.color = o.c;
+    oDesc.textContent = o.d;
+    vLoad.textContent = Math.round(state.L);
+    vCtrl.textContent = Math.round(state.C);
+  }
+
+  function update(){ draw(); syncReadout(); }
+
+  sLoad.addEventListener('input', function(){ state.L = +sLoad.value; update(); });
+  sCtrl.addEventListener('input', function(){ state.C = +sCtrl.value; update(); });
+  showFigs.addEventListener('change', draw);
+
+  // drag
+  var dragging = false;
+  function pointerToData(e){
+    var rect = cv.getBoundingClientRect();
+    var x = (e.clientX - rect.left);
+    var y = (e.clientY - rect.top);
+    var L = ((x - pad.l) / (W - pad.l - pad.r)) * 100;
+    var C = (1 - (y - pad.t) / (H - pad.t - pad.b)) * 100;
+    state.L = Math.max(0, Math.min(100, L));
+    state.C = Math.max(0, Math.min(100, C));
+    sLoad.value = Math.round(state.L);
+    sCtrl.value = Math.round(state.C);
+    update();
+  }
+  cv.addEventListener('pointerdown', function(e){ dragging = true; cv.setPointerCapture(e.pointerId); pointerToData(e); });
+  cv.addEventListener('pointermove', function(e){ if(dragging) pointerToData(e); });
+  cv.addEventListener('pointerup', function(){ dragging = false; });
+  cv.addEventListener('pointercancel', function(){ dragging = false; });
+
+  var rt;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(resize, 120); });
+
+  resize();
+  syncReadout();
+})();
+</script>
+</body>
+</html>
