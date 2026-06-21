@@ -14,27 +14,31 @@
 <style>
   :root{
     color-scheme: light;
-    --ink:#15161a; --ink-soft:#41434b; --ink-faint:#75787f;
-    --line:#e3e1db; --line-soft:#eeece6;
-    --bg:#faf9f6; --panel:#ffffff;
-    --accent:#9a5b2e; --accent-soft:#f3ece4;
+    --ink:#121722; --ink-soft:#3d4654; --ink-faint:#788396;
+    --line:#dde4ec; --line-soft:#eaeff4;
+    --bg:#eef1f6; --panel:#ffffff;
+    --accent:#0891b2; --accent2:#d61f8c; --accent-soft:#e7f6fb;
+    --grad:linear-gradient(92deg,var(--accent) 0%,var(--accent2) 100%);
     --tag-doc:#1f5c3d; --tag-self:#7a5a13; --tag-disp:#8a2f2f;
     --maxw: 840px;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);
+  body{margin:0;color:var(--ink);min-height:100vh;
+    background:linear-gradient(168deg,#f5f7fb 0%,#e9edf3 52%,#e2e7ee 100%);background-attachment:fixed;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
     font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;letter-spacing:.005em}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:60px 28px 120px}
   .kicker{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--accent);font-weight:600;margin-bottom:18px}
+    font-weight:700;margin-bottom:18px;display:inline-block;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   h1{font-size:34px;line-height:1.16;font-weight:680;letter-spacing:-.022em;margin:0 0 18px}
   .lede{font-size:18.5px;line-height:1.55;color:var(--ink-soft);margin:0}
   .byline{font-size:13.5px;color:var(--ink-faint);margin-top:24px;
     padding-top:18px;border-top:1px solid var(--line)}
-  h2{font-size:13px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);
-    font-weight:600;margin:62px 0 6px}
+  h2{font-size:13px;letter-spacing:.13em;text-transform:uppercase;
+    font-weight:700;margin:62px 0 6px;display:inline-block;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   h2 + .h2sub{font-size:24px;font-weight:660;letter-spacing:-.015em;margin:0 0 22px;line-height:1.25}
   h3{font-size:18.5px;font-weight:650;letter-spacing:-.01em;margin:34px 0 8px}
   p{margin:0 0 17px}
@@ -52,7 +56,7 @@
   .tldr p:last-child{margin-bottom:0}
   .tldr b{color:var(--ink);font-weight:640}
   .tldr .eqline{font-weight:650;color:var(--ink);letter-spacing:-.01em}
-  .tldr .eqline .op{color:var(--accent);font-weight:700;padding:0 3px}
+  .tldr .eqline .op{color:var(--accent2);font-weight:700;padding:0 3px}
 
   /* interactive */
   .viz{background:var(--panel);border:1px solid var(--line);border-radius:18px;
@@ -98,7 +102,7 @@
   caption{caption-side:bottom;text-align:left;font-size:12.5px;color:var(--ink-faint);padding:12px 16px;line-height:1.5}
   th,td{text-align:left;vertical-align:top;padding:13px 15px;border-bottom:1px solid var(--line-soft)}
   thead th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);
-    font-weight:600;background:#fcfbf9;position:sticky;top:0;border-bottom:1px solid var(--line)}
+    font-weight:600;background:#f4f7fb;position:sticky;top:0;border-bottom:1px solid var(--line)}
   tbody th{font-weight:650;color:var(--ink);white-space:nowrap;font-size:14.5px}
   tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
   td .sub{display:block;color:var(--ink-faint);font-size:12.5px;margin-top:2px}
@@ -113,7 +117,7 @@
   .formula{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
     border-radius:12px;padding:24px 26px;margin:26px 0;font-size:17px;line-height:1.6}
   .formula .eq{font-weight:650;color:var(--ink);letter-spacing:-.01em}
-  .formula .eq .op{color:var(--accent);font-weight:700;padding:0 4px}
+  .formula .eq .op{color:var(--accent2);font-weight:700;padding:0 4px}
   .pillars{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
   .pillar{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
   .pillar .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
@@ -380,7 +384,7 @@
   var vLoad = document.getElementById('vLoad'), vCtrl = document.getElementById('vCtrl');
   var oDot = document.getElementById('oDot'), oText = document.getElementById('oText'), oDesc = document.getElementById('oDesc');
   var showFigs = document.getElementById('showFigs');
-  var accent = '#9a5b2e';
+  var accent = '#06b6d4';
 
   var state = { L: 82, C: 84 };
 
@@ -395,14 +399,14 @@
   ];
 
   function outcome(L, C){
-    if (L < 32) return {k:'Conventional', c:'#8a8c92', fill:'rgba(130,132,138,0.11)',
+    if (L < 32) return {k:'Conventional', c:'#9aa3b2', fill:'rgba(150,162,182,0.10)',
       d:'Filter tight, associations stay conventional — not enough raw material to be a breakthrough or a breakdown.'};
     var r = C / Math.max(L, 1);
-    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(154,91,46,0.22)',
+    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(6,182,212,0.20)',
       d:'High load, and control keeps pace. The flood gets channeled into work.'};
-    if (r >= 0.55) return {k:'Volatile / mixed', c:'#a9772a', fill:'rgba(180,140,40,0.18)',
+    if (r >= 0.55) return {k:'Volatile / mixed', c:'#9b5cf0', fill:'rgba(155,92,240,0.16)',
       d:'Output and instability trade places as control fluctuates with state.'};
-    return {k:'Dysregulation', c:'#9a3b34', fill:'rgba(150,60,55,0.18)',
+    return {k:'Dysregulation', c:'#e0218a', fill:'rgba(224,33,138,0.18)',
       d:'Same load, filter wide open, control overwhelmed — it turns inward as pathology.'};
   }
 
@@ -442,7 +446,7 @@
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     roundRect(px0, py0, tw + 12, 18, 5);
     ctx.fill();
-    ctx.fillStyle = '#33353b';
+    ctx.fillStyle = '#2b3442';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
     ctx.fillText(text, px0 + 6, py0 + 9.5);
@@ -464,12 +468,12 @@
     }
 
     // plot border
-    ctx.strokeStyle = '#e3e1db';
+    ctx.strokeStyle = '#dbe2ea';
     ctx.lineWidth = 1;
     ctx.strokeRect(px(0), py(100), px(100)-px(0), py(0)-py(100));
 
     // axis labels
-    ctx.fillStyle = '#75787f';
+    ctx.fillStyle = '#6b7585';
     ctx.font = '600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.fillText('EXPLORATORY LOAD  →', (px(0)+px(100))/2, H - pad.b + 22);
@@ -481,7 +485,7 @@
     ctx.restore();
 
     // low/high ticks
-    ctx.fillStyle = '#9a9da3';
+    ctx.fillStyle = '#9aa3b2';
     ctx.font = '500 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
     ctx.textAlign='left'; ctx.textBaseline='top';
     ctx.fillText('low', px(0), H - pad.b + 7);
