@@ -97,6 +97,7 @@
   .viz .vhead{display:flex;justify-content:space-between;align-items:baseline;
     flex-wrap:wrap;gap:8px;margin-bottom:4px}
   .viz .vtitle{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.02em}
+  .viz .vsub{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);margin-top:3px;letter-spacing:.01em}
   .viz .vhint{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.01em}
   .canvas-wrap{position:relative;width:100%}
   canvas{display:block;width:100%;height:auto;border-radius:14px;cursor:grab;touch-action:none}
@@ -120,6 +121,21 @@
     cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 3px rgba(255,61,110,.2)}
   .toggle{display:flex;align-items:center;gap:9px;margin-top:18px;font-size:13.5px;color:var(--ink-soft)}
   .toggle input{width:15px;height:15px;accent-color:var(--accent)}
+  .vbtns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .vbtn{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.03em;
+    color:#fff;background:var(--accent);border:none;border-radius:999px;padding:9px 15px;cursor:pointer;
+    transition:transform .12s ease,box-shadow .12s ease,background .15s ease,opacity .15s ease;
+    box-shadow:0 6px 16px -9px rgba(255,61,110,.75)}
+  .vbtn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -10px rgba(255,61,110,.85)}
+  .vbtn:active{transform:translateY(0)}
+  .vbtn.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--line);box-shadow:none}
+  .vbtn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .vbtn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+  .readout .ostory{flex-basis:100%;font-size:13.5px;line-height:1.5;color:var(--ink-soft);
+    margin-top:6px;padding-top:11px;border-top:1px dashed var(--line);
+    max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .25s ease,padding .3s ease}
+  .readout .ostory.show{max-height:80px;opacity:1}
+  .readout .ostory b{color:var(--accent-deep);font-weight:600}
   .vcap{font-size:12px;color:var(--ink-faint);margin:14px 2px 0;line-height:1.5}
 
   .abstract{background:var(--panel);border:1px solid var(--line);border-radius:16px;
@@ -201,8 +217,11 @@
   <!-- INTERACTIVE -->
   <div class="viz">
     <div class="vhead">
-      <div class="vtitle">The genius phase diagram</div>
-      <div class="vhint">drag the marker · or use the sliders</div>
+      <div>
+        <div class="vtitle">The genius phase diagram</div>
+        <div class="vsub">the two principal axes of mental space · exploratory load &times; cognitive control</div>
+      </div>
+      <div class="vhint">drag · click a mind · or use the sliders</div>
     </div>
     <div class="canvas-wrap">
       <canvas id="phase" aria-label="Interactive phase diagram: exploratory load versus cognitive control"></canvas>
@@ -211,6 +230,7 @@
       <span class="dot" id="oDot"></span>
       <span class="otext" id="oText">Creative achievement</span>
       <span class="odesc" id="oDesc"></span>
+      <span class="ostory" id="oStory"></span>
     </div>
     <div class="sliders">
       <div class="slider">
@@ -224,8 +244,12 @@
         <div class="scap">IQ + working memory + cognitive flexibility. The machinery that channels the flood instead of drowning in it.</div>
       </div>
     </div>
-    <label class="toggle"><input type="checkbox" id="showFigs" checked> Show the seven figures <span style="color:var(--ink-faint)">(illustrative positions, not measured data)</span></label>
-    <div class="vcap">The field is the model, not a dataset. The same exploratory load (horizontal) lands as <b>achievement</b>, <b>volatility</b>, or <b>dysregulation</b> depending only on whether control (vertical) keeps pace. Figure placements are schematic illustrations of the argument — they are not psychometric measurements of real people.</div>
+    <label class="toggle"><input type="checkbox" id="showFigs" checked> Show the minds <span style="color:var(--ink-faint)">(illustrative positions, not measured data — drag to light up the nearest)</span></label>
+    <div class="vbtns">
+      <button id="btnDrop" class="vbtn" type="button">▼ Remove the control term</button>
+      <button id="btnReset" class="vbtn ghost" type="button">Reset</button>
+    </div>
+    <div class="vcap">Read the two axes as the <b>first two principal components of "mental space"</b> — exploratory load (PC1) and cognitive control (PC2) — the plane onto which almost all the variance between these minds projects; the famous quirks are lower-variance detail. The field is the model, not a dataset: the same load lands as <b>achievement</b>, <b>volatility</b>, or <b>dysregulation</b> depending only on whether control keeps pace. The seven profiled below are joined by other illustrative exemplars to show the model is general; all placements are schematic, not psychometric measurements of real people.</div>
   </div>
 
   <div class="abstract">
@@ -421,31 +445,63 @@
   var sLoad = document.getElementById('sLoad'), sCtrl = document.getElementById('sCtrl');
   var vLoad = document.getElementById('vLoad'), vCtrl = document.getElementById('vCtrl');
   var oDot = document.getElementById('oDot'), oText = document.getElementById('oText'), oDesc = document.getElementById('oDesc');
+  var oStory = document.getElementById('oStory');
   var showFigs = document.getElementById('showFigs');
-  var accent = '#2ecc71';
+  var btnDrop = document.getElementById('btnDrop'), btnReset = document.getElementById('btnReset');
+  // palette: graphite ink + one brand accent (pink). No other hues.
 
-  var state = { L: 82, C: 84 };
+  var DEF = { L: 82, C: 84 };
+  var state = { L: DEF.L, C: DEF.C };
+  var selected = -1, hover = -1, nearest = -1, anim = null;
 
+  // schematic positions + one-line stories (illustrative, not measured)
+  // The seven profiled in the report, joined by illustrative exemplars so the
+  // field reads as a general model, not a seven-point anecdote.
   var figs = [
-    {n:'Newton',  L:86, C:92, side:'r'},
-    {n:'Erdős', L:69, C:88, side:'l'},
-    {n:'Tesla',   L:92, C:82, side:'r'},
-    {n:'Musk',    L:77, C:78, side:'l'},
-    {n:'Grimes',  L:73, C:69, side:'l'},
-    {n:'Kanye',   L:90, C:55, side:'r'},
-    {n:'Fischer', L:84, C:35, side:'r'}
+    {n:'Newton',   L:86, C:92, side:'l', s:'Calculus, optics and gravitation — wrung from two plague years alone at Woolsthorpe. Load high, control higher.'},
+    {n:'Einstein', L:80, C:94, side:'l', s:'Relativity from a patent clerk’s daydreams — vast load, serenely governed.'},
+    {n:'Erdős',    L:69, C:88, side:'r', s:'≈1,525 papers, 511 collaborators, amphetamine-fuelled 19-hour days — and never once alone.'},
+    {n:'Ramanujan',L:88, C:86, side:'l', s:'Theorems he said a goddess whispered — torrential load, uncanny control, gone at 32.'},
+    {n:'Darwin',   L:66, C:88, side:'r', s:'Twenty years turning one idea over before he dared publish it.'},
+    {n:'Turing',   L:79, C:89, side:'r', s:'Built the very idea of the machine — then was destroyed by the state he saved.'},
+    {n:'Feynman',  L:78, C:90, side:'r', s:'Bongos, safecracking, QED — high play, higher control.'},
+    {n:'Tesla',    L:92, C:82, side:'l', s:'"Be alone — that is the secret of invention." Filter wide open; control just keeps pace.'},
+    {n:'Mozart',   L:84, C:84, side:'r', s:'Music arriving fully formed — enormous flow, matched note for note by craft.'},
+    {n:'Da Vinci', L:91, C:80, side:'l', s:'A thousand notebooks, half-finished — boundless load, control spread thin across too many doors.'},
+    {n:'Musk',     L:77, C:78, side:'r', s:'Read ~10 hrs a day as a bullied kid; learned to perform the extraversion only later.'},
+    {n:'Beethoven',L:85, C:72, side:'l', s:'Composing through deafness and rage — output rising as the world went quiet.'},
+    {n:'Dalí',     L:87, C:71, side:'l', s:'Paranoiac-critical method — courting the flood on purpose, then framing it.'},
+    {n:'Grimes',   L:73, C:69, side:'r', s:'Blacked-out windows, amphetamines, three sleepless weeks to cut Visions — control near its edge.'},
+    {n:'Woolf',    L:83, C:58, side:'l', s:'The novels and the illness ran on the same tide, in and out.'},
+    {n:'Hemingway',L:76, C:57, side:'r', s:'Spare prose over a rising tide of drink and despair.'},
+    {n:'Kanye',    L:90, C:55, side:'l', s:'Self-disclosed bipolar; the flood broadcasts faster than control can channel it.'},
+    {n:'Nash',     L:86, C:52, side:'r', s:'Game theory, then decades lost to delusion, then a lucid return — the field crossed and recrossed.'},
+    {n:'Van Gogh', L:89, C:46, side:'l', s:'~2,100 works in a decade; the flood outran every defence he had.'},
+    {n:'Plath',    L:82, C:44, side:'r', s:'Ariel’s late poems blaze brightest just as control gives way.'},
+    {n:'Cantor',   L:81, C:43, side:'r', s:'Infinities no one would accept; the rejection and the breakdowns compounded.'},
+    {n:'Fischer',  L:84, C:35, side:'l', s:'Nearly Newton’s load — but control collapses. The same wiring, drowning instead of building.'}
   ];
 
+  // Model: bands run parallel to the diagonal C = L.
+  // deficit = how far control lags load. Low load = no raw material, period.
   function outcome(L, C){
-    if (L < 32) return {k:'Conventional', c:'#9aa3b2', fill:'rgba(150,162,182,0.10)',
-      d:'Filter tight, associations stay conventional — not enough raw material to be a breakthrough or a breakdown.'};
-    var r = C / Math.max(L, 1);
-    if (r >= 0.80) return {k:'Creative achievement', c:accent, fill:'rgba(46,204,113,0.20)',
-      d:'High load, and control keeps pace. The flood gets channeled into work.'};
-    if (r >= 0.55) return {k:'Volatile / mixed', c:'#ff9f1c', fill:'rgba(255,159,28,0.16)',
-      d:'Output and instability trade places as control fluctuates with state.'};
-    return {k:'Dysregulation', c:'#ff3d6e', fill:'rgba(255,61,110,0.18)',
+    if (L < 34) return {k:'Conventional',
+      d:'Filter tight — associations stay conventional. Not enough raw material for a breakthrough or a breakdown.'};
+    var deficit = L - C;              // >0 means control is lagging the flood
+    if (deficit <= 6) return {k:'Creative achievement',
+      d:'High load, and control keeps pace with it. The flood gets channelled into work.'};
+    if (deficit <= 30) return {k:'Volatile / mixed',
+      d:'Output and instability trade places as control rises and falls with state.'};
+    return {k:'Dysregulation',
       d:'Same load, filter wide open, control overwhelmed — it turns inward as pathology.'};
+  }
+
+  // ink density: airy where control leads, dense where it drowns
+  function washAlpha(L, C){
+    if (L < 34) return 0.035;                 // inert — not enough material
+    var t = (L - C + 8) / 64;                 // deficit → 0..1
+    t = Math.max(0, Math.min(1, t));
+    return 0.03 + t * 0.17;                    // 0.03 (lucid) → 0.20 (drowning)
   }
 
   var pad = {l:54, r:18, t:16, b:42};
@@ -476,15 +532,16 @@
     ctx.closePath();
   }
 
-  function drawLabel(x, y, text, side){
-    ctx.font = '600 11.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
+  function drawLabel(x, y, text, side, emph){
+    ctx.font = (emph ? '700 ' : '600 ') + '11.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif';
     var tw = ctx.measureText(text).width;
     var px0 = (side === 'r') ? x + 9 : x - 9 - tw - 12;
     var py0 = y - 9;
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillStyle = emph ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.85)';
     roundRect(px0, py0, tw + 12, 18, 5);
     ctx.fill();
-    ctx.fillStyle = '#2b3442';
+    if (emph){ ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,61,110,0.55)'; ctx.stroke(); }
+    ctx.fillStyle = emph ? '#e02457' : '#2b3442';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
     ctx.fillText(text, px0 + 6, py0 + 9.5);
@@ -493,79 +550,169 @@
   function draw(){
     ctx.clearRect(0,0,W,H);
 
-    // phase field heatmap
-    var step = 2.4;
-    for (var L=0; L<=100; L+=step){
-      for (var C=0; C<=100; C+=step){
-        var o = outcome(L + step/2, C + step/2);
-        ctx.fillStyle = o.fill;
-        var x0 = px(L), x1 = px(L+step);
-        var y1 = py(C), y0 = py(C+step);
+    // faint graticule
+    ctx.strokeStyle = 'rgba(10,14,23,0.05)'; ctx.lineWidth = 1;
+    for (var g=10; g<100; g+=10){
+      ctx.beginPath(); ctx.moveTo(px(g), py(100)); ctx.lineTo(px(g), py(0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(0), py(g)); ctx.lineTo(px(100), py(g)); ctx.stroke();
+    }
+
+    // ink density field — lucid where control leads, dark where it drowns
+    var step = 2.5;
+    for (var L=0; L<100; L+=step){
+      for (var C=0; C<100; C+=step){
+        ctx.fillStyle = 'rgba(10,14,23,' + washAlpha(L+step/2, C+step/2).toFixed(3) + ')';
+        var x0 = px(L), x1 = px(L+step), y1 = py(C), y0 = py(C+step);
         ctx.fillRect(x0, y0, (x1-x0)+0.6, (y1-y0)+0.6);
       }
     }
 
+    // zone boundaries + the "control keeps pace" line, clipped to the plot
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(px(0), py(100), px(100)-px(0), py(0)-py(100));
+    ctx.clip();
+    function dline(k){ // boundary C = L - k
+      ctx.beginPath(); ctx.moveTo(px(k), py(0)); ctx.lineTo(px(100), py(100-k)); ctx.stroke();
+    }
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(10,14,23,0.20)';
+    dline(30);                                   // volatile / dysregulation
+    ctx.beginPath(); ctx.moveTo(px(34), py(0)); ctx.lineTo(px(34), py(100)); ctx.stroke(); // conventional
+    // emphasised "control keeps pace" boundary (deficit = 6) — the one accent in the field
+    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,61,110,0.55)'; ctx.setLineDash([5,4]);
+    dline(6);
+    ctx.setLineDash([]);
+    // label riding the parity line
+    ctx.font = '600 9px ui-monospace,Menlo,Consolas,monospace';
+    ctx.fillStyle = 'rgba(224,36,87,0.8)';
+    ctx.save();
+    ctx.translate(px(56), py(55));
+    ctx.rotate(Math.atan2(py(94)-py(0), px(100)-px(6)));
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    try{ctx.letterSpacing='1px';}catch(e){}
+    ctx.fillText('CONTROL KEEPS PACE', 0, -3);
+    try{ctx.letterSpacing='0px';}catch(e){}
+    ctx.restore();
+    ctx.restore();
+
+    // region labels — single ink tone (white where the field is darkest)
+    var zones=[
+      {t:'ACHIEVEMENT',  L:43, C:91, c:'rgba(10,14,23,0.42)'},
+      {t:'VOLATILE',     L:62, C:42, c:'rgba(10,14,23,0.42)'},
+      {t:'DYSREGULATION',L:74, C:12, c:'rgba(255,255,255,0.82)'},
+      {t:'CONVENTIONAL', L:17, C:55, c:'rgba(10,14,23,0.40)'}
+    ];
+    ctx.font = '600 9px ui-monospace,Menlo,Consolas,monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    try{ctx.letterSpacing='1.5px';}catch(e){}
+    for (var z=0; z<zones.length; z++){ ctx.fillStyle=zones[z].c; ctx.fillText(zones[z].t, px(zones[z].L), py(zones[z].C)); }
+    try{ctx.letterSpacing='0px';}catch(e){}
+
     // plot border
-    ctx.strokeStyle = '#dbe2ea';
+    ctx.strokeStyle = '#cfd6e0';
     ctx.lineWidth = 1;
     ctx.strokeRect(px(0), py(100), px(100)-px(0), py(0)-py(100));
 
-    // axis labels
-    ctx.fillStyle = '#828ca0';
-    ctx.font = '600 10.5px ui-monospace,Menlo,Consolas,monospace';
+    // numbered axis ticks (0–100)
+    ctx.fillStyle = '#9aa3b2'; ctx.strokeStyle = '#cfd6e0'; ctx.lineWidth = 1;
+    ctx.font = '500 9px ui-monospace,Menlo,Consolas,monospace';
+    for (var tk=0; tk<=100; tk+=25){
+      ctx.beginPath(); ctx.moveTo(px(tk), py(0)); ctx.lineTo(px(tk), py(0)+4); ctx.stroke();
+      ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(tk, px(tk), py(0)+6);
+      ctx.beginPath(); ctx.moveTo(px(0), py(tk)); ctx.lineTo(px(0)-4, py(tk)); ctx.stroke();
+      ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(tk, px(0)-7, py(tk));
+    }
+
+    // axis titles
+    ctx.fillStyle = '#5f6b80';
+    ctx.font = '600 10px ui-monospace,Menlo,Consolas,monospace';
     ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-    ctx.fillText('EXPLORATORY LOAD  →', (px(0)+px(100))/2, H - pad.b + 22);
+    ctx.fillText('EXPLORATORY LOAD  ·  PC1 →', (px(0)+px(100))/2, H - pad.b + 21);
     ctx.save();
-    ctx.translate(15, (py(0)+py(100))/2);
+    ctx.translate(14, (py(0)+py(100))/2);
     ctx.rotate(-Math.PI/2);
     ctx.textBaseline = 'middle';
-    ctx.fillText('COGNITIVE CONTROL  →', 0, 0);
+    ctx.fillText('COGNITIVE CONTROL  ·  PC2 →', 0, 0);
     ctx.restore();
 
-    // low/high ticks
-    ctx.fillStyle = '#9aa3b2';
-    ctx.font = '500 9.5px ui-monospace,Menlo,Consolas,monospace';
-    ctx.textAlign='left'; ctx.textBaseline='top';
-    ctx.fillText('low', px(0), H - pad.b + 7);
-    ctx.textAlign='right';
-    ctx.fillText('high', px(100), H - pad.b + 7);
-
-    // figures
+    // figures — a constellation of minds; names surface on hover / drag / select
     if (showFigs.checked){
       for (var i=0;i<figs.length;i++){
         var f = figs[i];
         var fx = px(f.L), fy = py(f.C);
-        var fo = outcome(f.L, f.C);
+        var isSel = (i === selected), isNear = (i === nearest), isHov = (i === hover);
+        var lit = isSel || isHov || isNear;
+        var fr = isSel ? 5.5 : (lit ? 5 : 3.6);
+        if (lit){
+          ctx.beginPath();
+          ctx.arc(fx, fy, fr + 5, 0, Math.PI*2);
+          ctx.fillStyle = isSel ? 'rgba(255,61,110,0.14)' : 'rgba(255,61,110,0.10)';
+          ctx.fill();
+        }
         ctx.beginPath();
-        ctx.arc(fx, fy, 4.5, 0, Math.PI*2);
-        ctx.fillStyle = fo.c;
+        ctx.arc(fx, fy, fr, 0, Math.PI*2);
+        ctx.fillStyle = (isSel || isNear) ? '#ff3d6e' : '#ffffff';
         ctx.fill();
-        ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke();
-        drawLabel(fx, fy, f.n, f.side);
+        ctx.lineWidth = lit ? 2 : 1.2;
+        ctx.strokeStyle = (isSel || isNear) ? '#e02457' : 'rgba(10,14,23,0.55)';
+        ctx.stroke();
+        if (lit) drawLabel(fx, fy, f.n, f.side, true);
       }
     }
 
-    // current marker
+    // current marker — pink crosshair you read off the axes
     var mx = px(state.L), my = py(state.C);
-    var mo = outcome(state.L, state.C);
-    ctx.beginPath();
-    ctx.arc(mx, my, 14, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(255,174,46,0.28)';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(mx, my, 8.5, 0, Math.PI*2);
-    ctx.fillStyle = mo.c;
-    ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,61,110,0.4)'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx, py(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(px(0), my); ctx.stroke();
+    ctx.setLineDash([]);
+    // live value pills on the axes
+    function pill(cx, cy, txt, axis){
+      ctx.font = '600 9.5px ui-monospace,Menlo,Consolas,monospace';
+      var tw = ctx.measureText(txt).width, w = tw + 10, h = 15;
+      var bx = (axis === 'x') ? cx - w/2 : cx - w, by = (axis === 'x') ? cy : cy - h/2;
+      ctx.fillStyle = '#ff3d6e'; roundRect(bx, by, w, h, 4); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(txt, bx + w/2, by + h/2 + 0.5);
+    }
+    pill(mx, py(0) + 5, String(Math.round(state.L)), 'x');
+    pill(px(0) - 6, my, String(Math.round(state.C)), 'y');
+    // marker dot
+    ctx.beginPath(); ctx.arc(mx, my, 13, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,61,110,0.16)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(mx, my, 6.5, 0, Math.PI*2); ctx.fillStyle = '#ff3d6e'; ctx.fill();
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#fff'; ctx.stroke();
-    ctx.lineWidth = 2; ctx.strokeStyle = '#ff9f1c';
-    ctx.beginPath(); ctx.arc(mx, my, 11, 0, Math.PI*2); ctx.stroke();
+  }
+
+  function setStory(){
+    if (selected < 0){ oStory.classList.remove('show'); oStory.innerHTML=''; return; }
+    var f = figs[selected];
+    oStory.innerHTML = '<b>'+f.n+'</b> — '+f.s;
+    oStory.classList.add('show');
+  }
+
+  function nearestFig(){
+    if (!showFigs.checked) return -1;
+    var best = -1, bd = Infinity;
+    for (var i=0;i<figs.length;i++){
+      var dx = px(figs[i].L) - px(state.L), dy = py(figs[i].C) - py(state.C);
+      var d = dx*dx + dy*dy;
+      if (d < bd){ bd = d; best = i; }
+    }
+    return best;
+  }
+  function showNearest(){
+    if (nearest < 0) return;
+    var f = figs[nearest];
+    oStory.innerHTML = '<span style="color:var(--ink-faint)">nearest mind ·</span> <b>'+f.n+'</b> — '+f.s;
+    oStory.classList.add('show');
   }
 
   function syncReadout(){
     var o = outcome(state.L, state.C);
-    oDot.style.background = o.c;
+    var drowning = (o.k === 'Dysregulation');
+    oDot.style.background = drowning ? '#e02457' : '#0a0e17';
     oText.textContent = o.k;
-    oText.style.color = o.c;
+    oText.style.color = drowning ? '#e02457' : '#0a0e17';
     oDesc.textContent = o.d;
     vLoad.textContent = Math.round(state.L);
     vCtrl.textContent = Math.round(state.C);
@@ -573,28 +720,92 @@
 
   function update(){ draw(); syncReadout(); }
 
-  sLoad.addEventListener('input', function(){ state.L = +sLoad.value; update(); });
-  sCtrl.addEventListener('input', function(){ state.C = +sCtrl.value; update(); });
-  showFigs.addEventListener('change', draw);
+  function stopAnim(){ if (anim){ cancelAnimationFrame(anim); anim = null; } btnDrop.disabled = false; }
 
-  // drag
+  function deselect(){ if (selected !== -1){ selected = -1; setStory(); } }
+
+  sLoad.addEventListener('input', function(){ stopAnim(); deselect(); state.L = +sLoad.value; update(); });
+  sCtrl.addEventListener('input', function(){ stopAnim(); deselect(); state.C = +sCtrl.value; update(); });
+  showFigs.addEventListener('change', function(){ if(!showFigs.checked){ hover=-1; deselect(); } update(); });
+
+  // pointer geometry + figure hit testing
   var dragging = false;
-  function pointerToData(e){
+  function localXY(e){
     var rect = cv.getBoundingClientRect();
-    var x = (e.clientX - rect.left);
-    var y = (e.clientY - rect.top);
-    var L = ((x - pad.l) / (W - pad.l - pad.r)) * 100;
-    var C = (1 - (y - pad.t) / (H - pad.t - pad.b)) * 100;
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+  function hitFig(e){
+    if (!showFigs.checked) return -1;
+    var p = localXY(e);
+    for (var i=0;i<figs.length;i++){
+      var dx = p.x - px(figs[i].L), dy = p.y - py(figs[i].C);
+      if (dx*dx + dy*dy <= 169) return i; // within ~13px
+    }
+    return -1;
+  }
+  function pointerToData(e){
+    var p = localXY(e);
+    var L = ((p.x - pad.l) / (W - pad.l - pad.r)) * 100;
+    var C = (1 - (p.y - pad.t) / (H - pad.t - pad.b)) * 100;
     state.L = Math.max(0, Math.min(100, L));
     state.C = Math.max(0, Math.min(100, C));
     sLoad.value = Math.round(state.L);
     sCtrl.value = Math.round(state.C);
+    nearest = nearestFig(); showNearest();
     update();
   }
-  cv.addEventListener('pointerdown', function(e){ dragging = true; cv.setPointerCapture(e.pointerId); pointerToData(e); });
-  cv.addEventListener('pointermove', function(e){ if(dragging) pointerToData(e); });
-  cv.addEventListener('pointerup', function(){ dragging = false; });
-  cv.addEventListener('pointercancel', function(){ dragging = false; });
+  function selectFig(i){
+    selected = i; var f = figs[i];
+    state.L = f.L; state.C = f.C;
+    sLoad.value = Math.round(f.L); sCtrl.value = Math.round(f.C);
+    setStory(); update();
+  }
+
+  cv.addEventListener('pointerdown', function(e){
+    stopAnim();
+    var h = hitFig(e);
+    if (h >= 0){ selectFig(h); return; }      // click a figure → snap + story
+    dragging = true; deselect();
+    cv.setPointerCapture(e.pointerId);
+    pointerToData(e);
+  });
+  cv.addEventListener('pointermove', function(e){
+    if (dragging){ pointerToData(e); return; }
+    var h = hitFig(e);
+    cv.style.cursor = h >= 0 ? 'pointer' : 'grab';
+    if (h !== hover){ hover = h; draw(); }
+  });
+  cv.addEventListener('pointerup', function(){ dragging = false; if (nearest !== -1){ nearest = -1; setStory(); draw(); } });
+  cv.addEventListener('pointercancel', function(){ dragging = false; if (nearest !== -1){ nearest = -1; setStory(); draw(); } });
+  cv.addEventListener('pointerleave', function(){ if (hover !== -1){ hover = -1; draw(); } });
+
+  // "Remove the control term" — same load, control drains away → pathology
+  btnDrop.addEventListener('click', function(){
+    stopAnim(); deselect();
+    var startC = state.C, L = state.L;
+    var targetC = Math.max(8, Math.min(startC - 28, L - 42));
+    if (targetC >= startC - 2) return;
+    btnDrop.disabled = true;
+    var dur = 1500, t0 = null;
+    function frame(ts){
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 3);
+      state.C = startC + (targetC - startC) * e;
+      sCtrl.value = Math.round(state.C);
+      update();
+      if (p < 1){ anim = requestAnimationFrame(frame); }
+      else { anim = null; btnDrop.disabled = false; }
+    }
+    anim = requestAnimationFrame(frame);
+  });
+
+  btnReset.addEventListener('click', function(){
+    stopAnim(); deselect();
+    state.L = DEF.L; state.C = DEF.C;
+    sLoad.value = DEF.L; sCtrl.value = DEF.C;
+    update();
+  });
 
   var rt;
   window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(resize, 120); });
